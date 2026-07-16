@@ -1,68 +1,155 @@
+import { lazy, Suspense, memo } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
-import DashboardLayout from '../layouts/DashboardLayout'
-import Home from '../pages/Home/Home'
-import About from '../pages/About/About'
-import Contact from '../pages/Contact/Contact'
-import Login from "../pages/auth/Login";
-import Register from "../pages/auth/Register";
-import Services from '../pages/Services/Services'
-import ServiceDetails from '../pages/ServiceDetails/ServiceDetails'
-import CustomerDashboard from '../pages/CustomerDashboard/CustomerDashboard'
-import ProviderDashboard from '../pages/ProviderDashboard/ProviderDashboard'
-import AdminDashboard from '../pages/AdminDashboard/AdminDashboard'
-import Error404 from '../pages/Error404/Error404'
 import ProtectedRoute from './ProtectedRoute'
-import FAQSection from '../pages/Home/components/FAQSection'
+import PageLoader from '../components/common/PageLoader'
 
-export default function AppRoutes() {
+const Home = lazy(() => import('../pages/Home/Home'))
+const About = lazy(() => import('../pages/About/About'))
+const Contact = lazy(() => import('../pages/Contact/Contact'))
+const Login = lazy(() => import('../pages/auth/Login'))
+const Register = lazy(() => import('../pages/auth/Register'))
+const Services = lazy(() => import('../pages/Services/Services'))
+const ServiceDetails = lazy(() => import('../pages/ServiceDetails/ServiceDetails'))
+const ProviderDashboardLayout = lazy(() => import('../pages/ProviderDashboard/DashboardLayout'))
+const ProviderDashboardHome = lazy(() => import('../pages/ProviderDashboard/DashboardHome'))
+const ProviderServices = lazy(() => import('../pages/ProviderDashboard/Services/Services'))
+const ProviderAddService = lazy(() => import('../pages/ProviderDashboard/Services/AddService'))
+const ProviderEditService = lazy(() => import('../pages/ProviderDashboard/Services/EditService'))
+const ProviderServiceDetails = lazy(() => import('../pages/ProviderDashboard/Services/ServiceDetails'))
+const ProviderBookingsList = lazy(() => import('../pages/ProviderDashboard/Bookings/Bookings'))
+const ProviderBookingDetails = lazy(() => import('../pages/ProviderDashboard/Bookings/BookingDetails'))
+const ProviderCustomersList = lazy(() => import('../pages/ProviderDashboard/Customers/Customers'))
+const ProviderCustomerDetails = lazy(() => import('../pages/ProviderDashboard/Customers/CustomerDetails'))
+const ProviderEarnings = lazy(() => import('../pages/ProviderDashboard/Earnings/Earnings'))
+const ProviderTransactionDetails = lazy(() => import('../pages/ProviderDashboard/Earnings/TransactionDetails'))
+const ProviderSchedule = lazy(() => import('../pages/ProviderDashboard/Schedule/Schedule'))
+const ProviderCalendarView = lazy(() => import('../pages/ProviderDashboard/Schedule/CalendarView'))
+const ProviderAvailabilitySettings = lazy(() => import('../pages/ProviderDashboard/Schedule/AvailabilitySettings'))
+const ProviderMessages = lazy(() => import('../pages/ProviderDashboard/Communication/Messages'))
+const ProviderChatWindow = lazy(() => import('../pages/ProviderDashboard/Communication/ChatWindow'))
+const ProviderNotifications = lazy(() => import('../pages/ProviderDashboard/Communication/Notifications'))
+const ProviderProfile = lazy(() => import('../pages/ProviderDashboard/Profile/Profile'))
+const ProviderEditProfile = lazy(() => import('../pages/ProviderDashboard/Profile/EditProfile'))
+const ProviderSettings = lazy(() => import('../pages/ProviderDashboard/Profile/Settings'))
+const ProviderNotFound = lazy(() => import('../pages/ProviderDashboard/components/NotFound'))
+const AdminDashboard = lazy(() => import('../pages/AdminDashboard/AdminDashboard'))
+const Error404 = lazy(() => import('../pages/Error404/Error404'))
+
+const DashboardLayout = lazy(() => import('../layouts/DashboardLayout'))
+const CustomerDashboardLayout = lazy(() => import('../pages/CustomerDashboard/DashboardLayout'))
+const DashboardHome = lazy(() => import('../pages/CustomerDashboard/DashboardHome/DashboardHome'))
+const MyBookings = lazy(() => import('../pages/CustomerDashboard/Bookings/Bookings'))
+const BookingDetails = lazy(() => import('../pages/CustomerDashboard/BookingDetails/BookingDetails'))
+const WishlistPage = lazy(() => import('../pages/CustomerDashboard/Wishlist/Wishlist'))
+const Notifications = lazy(() => import('../pages/CustomerDashboard/Notifications/Notifications'))
+const Messages = lazy(() => import('../pages/CustomerDashboard/Messages/Messages'))
+const Payments = lazy(() => import('../pages/CustomerDashboard/Payments/Payments'))
+const Invoices = lazy(() => import('../pages/CustomerDashboard/Payments/Payments'))
+const Addresses = lazy(() => import('../pages/CustomerDashboard/pages/Addresses'))
+const Reviews = lazy(() => import('../pages/CustomerDashboard/pages/Reviews'))
+const Profile = lazy(() => import('../pages/CustomerDashboard/Profile/Profile'))
+const Settings = lazy(() => import('../pages/CustomerDashboard/Profile/Profile'))
+const Help = lazy(() => import('../pages/CustomerDashboard/pages/Help'))
+const DashboardNotFound = lazy(() => import('../pages/CustomerDashboard/components/Common/DashboardNotFound'))
+
+function LazyPage({ Component, ...props }) {
+  return (
+    <Suspense fallback={<PageLoader fullScreen={false} />}>
+      <Component {...props} />
+    </Suspense>
+  )
+}
+
+function AppRoutes() {
   return (
     <Routes>
-      {/* Public routes */}
       <Route element={<MainLayout />}>
-        <Route index element={<Home />} />
-        <Route path="about" element={<About />} />
-        <Route path="contact" element={<Contact />} />
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
-        <Route path="services" element={<Services />} />
-        <Route path="services/:id" element={<ServiceDetails />} />
-        <Route path="*" element={<Error404 />} />
+        <Route index element={<LazyPage Component={Home} />} />
+        <Route path="about" element={<LazyPage Component={About} />} />
+        <Route path="contact" element={<LazyPage Component={Contact} />} />
+        <Route path="login" element={<LazyPage Component={Login} />} />
+        <Route path="register" element={<LazyPage Component={Register} />} />
+        <Route path="services" element={<LazyPage Component={Services} />} />
+        <Route path="services/:id" element={<LazyPage Component={ServiceDetails} />} />
+        <Route path="*" element={<LazyPage Component={Error404} />} />
       </Route>
 
-      {/* Dashboard routes */}
       <Route
         path="customer-dashboard"
         element={
           <ProtectedRoute allowedRoles={['customer']}>
-            <DashboardLayout role="customer" />
+            <Suspense fallback={<PageLoader fullScreen={false} />}>
+              <CustomerDashboardLayout />
+            </Suspense>
           </ProtectedRoute>
         }
       >
-        <Route index element={<CustomerDashboard />} />
+        <Route index element={<LazyPage Component={DashboardHome} />} />
+        <Route path="bookings" element={<LazyPage Component={MyBookings} />} />
+        <Route path="bookings/:bookingId" element={<LazyPage Component={BookingDetails} />} />
+        <Route path="wishlist" element={<LazyPage Component={WishlistPage} />} />
+        <Route path="notifications" element={<LazyPage Component={Notifications} />} />
+        <Route path="messages" element={<LazyPage Component={Messages} />} />
+        <Route path="payments" element={<LazyPage Component={Payments} />} />
+        <Route path="invoices" element={<LazyPage Component={Invoices} />} />
+        <Route path="addresses" element={<LazyPage Component={Addresses} />} />
+        <Route path="reviews" element={<LazyPage Component={Reviews} />} />
+        <Route path="profile" element={<LazyPage Component={Profile} />} />
+        <Route path="settings" element={<LazyPage Component={Settings} defaultTab="notifications" />} />
+        <Route path="help" element={<LazyPage Component={Help} />} />
+        <Route path="*" element={<LazyPage Component={DashboardNotFound} />} />
       </Route>
 
       <Route
         path="provider-dashboard"
         element={
           <ProtectedRoute allowedRoles={['provider']}>
-            <DashboardLayout role="provider" />
+            <Suspense fallback={<PageLoader fullScreen={false} />}>
+              <ProviderDashboardLayout />
+            </Suspense>
           </ProtectedRoute>
         }
       >
-        <Route index element={<ProviderDashboard />} />
+        <Route index element={<LazyPage Component={ProviderDashboardHome} />} />
+        <Route path="services" element={<LazyPage Component={ProviderServices} />} />
+        <Route path="services/add" element={<LazyPage Component={ProviderAddService} />} />
+        <Route path="services/:id" element={<LazyPage Component={ProviderServiceDetails} />} />
+        <Route path="services/:id/edit" element={<LazyPage Component={ProviderEditService} />} />
+        <Route path="bookings" element={<LazyPage Component={ProviderBookingsList} />} />
+        <Route path="bookings/:id" element={<LazyPage Component={ProviderBookingDetails} />} />
+        <Route path="customers" element={<LazyPage Component={ProviderCustomersList} />} />
+        <Route path="customers/:id" element={<LazyPage Component={ProviderCustomerDetails} />} />
+        <Route path="earnings" element={<LazyPage Component={ProviderEarnings} />} />
+        <Route path="earnings/transactions/:id" element={<LazyPage Component={ProviderTransactionDetails} />} />
+        <Route path="schedule" element={<LazyPage Component={ProviderSchedule} />}>
+          <Route path="calendar" element={<LazyPage Component={ProviderCalendarView} />} />
+          <Route path="settings" element={<LazyPage Component={ProviderAvailabilitySettings} />} />
+        </Route>
+        <Route path="messages" element={<LazyPage Component={ProviderMessages} />}>
+          <Route path=":conversationId" element={<LazyPage Component={ProviderChatWindow} />} />
+        </Route>
+        <Route path="notifications" element={<LazyPage Component={ProviderNotifications} />} />
+        <Route path="profile" element={<LazyPage Component={ProviderProfile} />} />
+        <Route path="profile/edit" element={<LazyPage Component={ProviderEditProfile} />} />
+        <Route path="settings" element={<LazyPage Component={ProviderSettings} />} />
+        <Route path="*" element={<LazyPage Component={ProviderNotFound} />} />
       </Route>
 
       <Route
         path="admin-dashboard"
         element={
           <ProtectedRoute allowedRoles={['admin']}>
-            <DashboardLayout role="admin" />
+            <Suspense fallback={<PageLoader fullScreen={false} />}>
+              <DashboardLayout role="admin" />
+            </Suspense>
           </ProtectedRoute>
         }
       >
-        <Route index element={<AdminDashboard />} />
+        <Route index element={<LazyPage Component={AdminDashboard} />} />
       </Route>
     </Routes>
   )
 }
+
+export default memo(AppRoutes)

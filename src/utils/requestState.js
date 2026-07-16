@@ -1,0 +1,7 @@
+export const REQUEST_STATE = {
+  IDLE: 'IDLE',
+  LOADING: 'LOADING',
+  SUCCESS: 'SUCCESS',
+  ERROR: 'ERROR',
+  EMPTY: 'EMPTY',
+}
