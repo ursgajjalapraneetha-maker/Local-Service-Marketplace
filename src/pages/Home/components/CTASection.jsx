@@ -1,5 +1,8 @@
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight, UserPlus, Sparkles } from 'lucide-react'
+
+const MotionLink = motion(Link)
 
 /**
  * CTASection
@@ -85,8 +88,8 @@ export default function CTASection() {
             transition={{ delay: 0.4, duration: 0.5 }}
             className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-5"
           >
-            <motion.a
-              href="#"
+            <MotionLink
+              to="/services"
               whileHover={{ scale: 1.03, boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)' }}
               whileTap={{ scale: 0.97 }}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-primary font-semibold rounded-xl shadow-lg hover:bg-gray-100 transition-all"
@@ -94,10 +97,10 @@ export default function CTASection() {
             >
               Book a Service
               <ArrowRight size={18} aria-hidden="true" />
-            </motion.a>
+            </MotionLink>
 
-            <motion.a
-              href="#"
+            <MotionLink
+              to="/register"
               whileHover={{ scale: 1.03, boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)' }}
               whileTap={{ scale: 0.97 }}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-white/20 text-white font-semibold rounded-xl hover:bg-white/10 backdrop-blur-md transition-all"
@@ -105,7 +108,7 @@ export default function CTASection() {
             >
               <UserPlus size={18} aria-hidden="true" />
               Become a Provider
-            </motion.a>
+            </MotionLink>
           </motion.div>
 
           {/* Trust indicator */}

@@ -2,6 +2,7 @@ import { lazy, Suspense, memo } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 import ProtectedRoute from './ProtectedRoute'
+import PublicRoute from './PublicRoute'
 import PageLoader from '../components/common/PageLoader'
 
 const Home = lazy(() => import('../pages/Home/Home'))
@@ -9,8 +10,15 @@ const About = lazy(() => import('../pages/About/About'))
 const Contact = lazy(() => import('../pages/Contact/Contact'))
 const Login = lazy(() => import('../pages/auth/Login'))
 const Register = lazy(() => import('../pages/auth/Register'))
+const ForgotPassword = lazy(() => import('../pages/auth/ForgotPassword'))
+const OTPVerification = lazy(() => import('../pages/auth/OTPVerification'))
+const ResetPassword = lazy(() => import('../pages/auth/ResetPassword'))
+const RoleSelection = lazy(() => import('../pages/auth/RoleSelection'))
 const Services = lazy(() => import('../pages/Services/Services'))
 const ServiceDetails = lazy(() => import('../pages/ServiceDetails/ServiceDetails'))
+const Terms = lazy(() => import('../pages/Legal/Terms'))
+const Privacy = lazy(() => import('../pages/Legal/Privacy'))
+
 const ProviderDashboardLayout = lazy(() => import('../pages/ProviderDashboard/DashboardLayout'))
 const ProviderDashboardHome = lazy(() => import('../pages/ProviderDashboard/DashboardHome'))
 const ProviderServices = lazy(() => import('../pages/ProviderDashboard/Services/Services'))
@@ -33,8 +41,16 @@ const ProviderProfile = lazy(() => import('../pages/ProviderDashboard/Profile/Pr
 const ProviderEditProfile = lazy(() => import('../pages/ProviderDashboard/Profile/EditProfile'))
 const ProviderSettings = lazy(() => import('../pages/ProviderDashboard/Profile/Settings'))
 const ProviderNotFound = lazy(() => import('../pages/ProviderDashboard/components/NotFound'))
-const AdminDashboard = lazy(() => import('../pages/AdminDashboard/AdminDashboard'))
-const Error404 = lazy(() => import('../pages/Error404/Error404'))
+
+const AdminDashboardHome = lazy(() => import('../pages/Admin/DashboardHome'))
+const AdminUsers = lazy(() => import('../pages/Admin/Users'))
+const AdminProviders = lazy(() => import('../pages/Admin/Providers'))
+const AdminCategories = lazy(() => import('../pages/Admin/Categories'))
+const AdminServices = lazy(() => import('../pages/Admin/Services'))
+const AdminBookings = lazy(() => import('../pages/Admin/Bookings'))
+const AdminAnalytics = lazy(() => import('../pages/Admin/Analytics'))
+const AdminSettings = lazy(() => import('../pages/Admin/Settings'))
+const AdminLayout = lazy(() => import('../layouts/AdminLayout'))
 
 const DashboardLayout = lazy(() => import('../layouts/DashboardLayout'))
 const CustomerDashboardLayout = lazy(() => import('../pages/CustomerDashboard/DashboardLayout'))
@@ -52,6 +68,7 @@ const Profile = lazy(() => import('../pages/CustomerDashboard/Profile/Profile'))
 const Settings = lazy(() => import('../pages/CustomerDashboard/Profile/Profile'))
 const Help = lazy(() => import('../pages/CustomerDashboard/pages/Help'))
 const DashboardNotFound = lazy(() => import('../pages/CustomerDashboard/components/Common/DashboardNotFound'))
+const Error404 = lazy(() => import('../pages/Error404/Error404'))
 
 function LazyPage({ Component, ...props }) {
   return (
@@ -68,10 +85,18 @@ function AppRoutes() {
         <Route index element={<LazyPage Component={Home} />} />
         <Route path="about" element={<LazyPage Component={About} />} />
         <Route path="contact" element={<LazyPage Component={Contact} />} />
-        <Route path="login" element={<LazyPage Component={Login} />} />
-        <Route path="register" element={<LazyPage Component={Register} />} />
+        <Route element={<PublicRoute />}>
+          <Route path="login" element={<LazyPage Component={Login} />} />
+          <Route path="register" element={<LazyPage Component={Register} />} />
+          <Route path="forgot-password" element={<LazyPage Component={ForgotPassword} />} />
+          <Route path="otp-verification" element={<LazyPage Component={OTPVerification} />} />
+          <Route path="reset-password" element={<LazyPage Component={ResetPassword} />} />
+          <Route path="role-selection" element={<LazyPage Component={RoleSelection} />} />
+        </Route>
         <Route path="services" element={<LazyPage Component={Services} />} />
         <Route path="services/:id" element={<LazyPage Component={ServiceDetails} />} />
+        <Route path="terms" element={<LazyPage Component={Terms} />} />
+        <Route path="privacy" element={<LazyPage Component={Privacy} />} />
         <Route path="*" element={<LazyPage Component={Error404} />} />
       </Route>
 
@@ -141,12 +166,19 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={['admin']}>
             <Suspense fallback={<PageLoader fullScreen={false} />}>
-              <DashboardLayout role="admin" />
+              <AdminLayout />
             </Suspense>
           </ProtectedRoute>
         }
       >
-        <Route index element={<LazyPage Component={AdminDashboard} />} />
+        <Route index element={<LazyPage Component={AdminDashboardHome} />} />
+        <Route path="users" element={<LazyPage Component={AdminUsers} />} />
+        <Route path="providers" element={<LazyPage Component={AdminProviders} />} />
+        <Route path="categories" element={<LazyPage Component={AdminCategories} />} />
+        <Route path="services" element={<LazyPage Component={AdminServices} />} />
+        <Route path="bookings" element={<LazyPage Component={AdminBookings} />} />
+        <Route path="reports" element={<LazyPage Component={AdminAnalytics} />} />
+        <Route path="settings" element={<LazyPage Component={AdminSettings} />} />
       </Route>
     </Routes>
   )

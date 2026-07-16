@@ -100,7 +100,7 @@ export default function MobileMenu({ isOpen, onClose }) {
                 </button>
               </div>
               <Link
-                to="/become-provider"
+                to="/register"
                 onClick={onClose}
                 className="block w-full px-4 py-2.5 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-primary-dark transition-colors"
               >
