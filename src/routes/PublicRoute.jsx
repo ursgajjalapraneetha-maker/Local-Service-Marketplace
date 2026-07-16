@@ -1,8 +1,8 @@
-import { Navigate, useLocation } from 'react-router-dom'
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { USER_ROLES } from '../constants'
 
-export default function ProtectedRoute({ children, allowedRoles }) {
+export default function PublicRoute({ allowedWhenAuthenticated = false }) {
   const { isAuthenticated, user } = useAuth()
   const location = useLocation()
 
@@ -17,14 +17,10 @@ export default function ProtectedRoute({ children, allowedRoles }) {
     }
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace state={{ from: location }} />
-  }
-
-  if (allowedRoles && !allowedRoles.includes(user?.role)) {
+  if (isAuthenticated && !allowedWhenAuthenticated) {
     const dashboardPath = getDashboardPath(user?.role)
-    return <Navigate to={dashboardPath} replace />
+    return <Navigate to={dashboardPath} replace state={{ from: location }} />
   }
 
-  return children
+  return <Outlet />
 }

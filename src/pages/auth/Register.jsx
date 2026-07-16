@@ -2,43 +2,38 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
-import { Mail, Phone, User, Briefcase } from 'lucide-react'
+import { Mail, Phone, User, Briefcase, Shield, CheckCircle } from 'lucide-react'
 import RegisterInput from "../../components/auth/RegisterInput";
 import PasswordInput from "../../components/auth/PasswordInput";
 import PasswordStrength from "../../components/auth/PasswordStrength";
 import RoleCard from "../../components/auth/RoleCard";
-//import { useAuth } from './context/AuthContext'
-
+import { useAuth } from "../../hooks/useAuth";
+import { USER_ROLES } from "../../constants";
+import toast from 'react-hot-toast'
 
 const roles = [
   {
-    value: 'customer',
+    value: USER_ROLES.CUSTOMER,
     label: 'Customer',
     desc: 'Book services from verified professionals',
-    features: [
-      '✓ Book trusted professionals',
-      '✓ Manage appointments', 
-      '✓ Secure payments'
-    ]
+    icon: User,
+    color: 'blue',
   },
   {
-    value: 'provider',
+    value: USER_ROLES.PROVIDER,
     label: 'Service Provider',
     desc: 'Offer your services and earn money',
-    features: [
-      '✓ Showcase your services',
-      '✓ Receive booking requests',
-      '✓ Grow your business'
-    ]
+    icon: Briefcase,
+    color: 'green',
   }
 ]
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const { register: authRegister } = useAuth()
   const { register, handleSubmit, formState: { errors }, watch, setValue, getValues } = useForm()
   const selectedRole = watch('role')
-  //const { setUser } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -52,27 +47,27 @@ export default function Register() {
 
   const onSubmit = async (data) => {
     try {
-      const registerData = {
+      await new Promise(r => setTimeout(r, 1000))
+      
+      const userData = {
         name: data.name,
         email: data.email,
         phone: data.phone,
-        password: data.password,
-        role: data.role
+        role: data.role,
       }
-
-      const response = await registerUser(registerData)
-
-      if (response.success) {
-        setUser(response.user)
-        navigate('/login', {
-          state: {
-            message: 'Registration successful! Please login to continue.',
-            type: 'success'
-          }
-        })
-      }
+      
+      authRegister(userData)
+      
+      navigate('/otp-verification', {
+        state: {
+          email: data.email,
+          name: data.name,
+          role: data.role,
+          password: data.password,
+        }
+      })
     } catch (error) {
-      console.error('Registration failed:', error)
+      toast.error('Registration failed. Please try again.')
     }
   }
 
@@ -100,7 +95,7 @@ export default function Register() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="flex-1"
+            className="flex-1 hidden lg:block"
           >
             <div className="mb-8">
               <h1 className="text-3xl lg:text-4xl font-heading font-bold text-secondary mb-4">Join our Local Services Marketplace</h1>
@@ -136,6 +131,18 @@ export default function Register() {
                 </div>
               </div>
             </div>
+            
+            <div className="mt-10 p-6 bg-primary/5 rounded-2xl border border-primary/10">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+                  <Shield className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-secondary">Your security matters</h3>
+                  <p className="text-sm text-gray-600 mt-1">Email verification required. We never share your data.</p>
+                </div>
+              </div>
+            </div>
           </motion.div>
 
           <motion.div
@@ -149,7 +156,7 @@ export default function Register() {
               <p className="mt-2 text-gray-600">Join our marketplace today</p>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm space-y-5">
+            <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm space-y-5">
               <RegisterInput
                 label="Full Name"
                 type="text"
@@ -203,7 +210,7 @@ export default function Register() {
                     minLength: { value: 8, message: 'Minimum 8 characters' },
                     pattern: {
                       value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
-                      message: 'Must contain at least one uppercase letter, one lowercase letter, and one number'
+                      message: 'Must contain uppercase, lowercase & number'
                     }
                   })}
                 />
@@ -227,7 +234,7 @@ export default function Register() {
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-secondary mb-2">I want to be a</label>
                 <div className="grid grid-cols-2 gap-3">
-                  {roles.map(({ value, label, desc }) => (
+                  {roles.map(({ value, label, desc, icon: Icon, color }) => (
                     <RoleCard
                       key={value}
                       title={label}
@@ -235,18 +242,36 @@ export default function Register() {
                       value={value}
                       selected={selectedRole === value}
                       onClick={() => setValue('role', value)}
+                      Icon={Icon}
+                      color={color}
                     />
                   ))}
                 </div>
                 {errors.role && <p className="text-xs text-danger mt-1">Please select a role</p>}
               </div>
 
+              <div className="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  {...register('terms', { required: 'You must accept the terms' })}
+                  className="w-4 h-4 mt-0.5 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+                />
+                <label htmlFor="terms" className="text-sm text-gray-600 leading-relaxed">
+                  I agree to the{' '}
+                  <Link to="/terms" className="text-primary hover:underline font-medium">Terms of Service</Link>{' '}
+                  and{' '}
+                  <Link to="/privacy" className="text-primary hover:underline font-medium">Privacy Policy</Link>
+                </label>
+              </div>
+              {errors.terms && <p className="text-xs text-danger mt-1 ml-7">You must accept the terms</p>}
+
               <button
                 type="submit"
-                className="w-full px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={watch('password') !== watch('confirmPassword')}
+                className="w-full px-6 py-3.5 bg-primary text-white font-medium rounded-xl hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 Create Account
+                <CheckCircle size={18} />
               </button>
 
               <p className="text-center text-sm text-gray-600">

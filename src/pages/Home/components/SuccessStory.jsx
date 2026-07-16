@@ -1,5 +1,8 @@
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Clock, Star, ArrowRight } from 'lucide-react'
+
+const MotionLink = motion(Link)
 import { successStory } from '../data/testimonials'
 
 /**
@@ -111,14 +114,14 @@ export default function SuccessStory() {
           </div>
 
           {/* CTA */}
-          <motion.a
-            href="#"
+          <MotionLink
+            to="/services"
             whileHover={{ x: 4 }}
             className="inline-flex items-center gap-2 text-sm font-semibold text-primary group"
           >
             Read Full Story
             <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
-          </motion.a>
+          </MotionLink>
         </div>
       </div>
     </motion.section>

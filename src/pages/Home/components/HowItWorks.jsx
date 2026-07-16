@@ -1,5 +1,8 @@
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight, UserPlus } from 'lucide-react'
+
+const MotionLink = motion(Link)
 import { steps } from '../data/howItWorks'
 import SectionHeader from './SectionHeader'
 import StepCard from './StepCard'
@@ -136,8 +139,8 @@ export default function HowItWorks() {
             Ready to book your first service?
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <motion.a
-              href="#"
+            <MotionLink
+              to="/services"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-primary rounded-xl hover:bg-primary-dark transition-colors active:scale-[0.97]"
@@ -145,9 +148,9 @@ export default function HowItWorks() {
             >
               Book Now
               <ArrowRight size={16} aria-hidden="true" />
-            </motion.a>
-            <motion.a
-              href="#"
+            </MotionLink>
+            <MotionLink
+              to="/register"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-secondary border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors active:scale-[0.97]"
@@ -155,7 +158,7 @@ export default function HowItWorks() {
             >
               <UserPlus size={16} aria-hidden="true" />
               Become a Provider
-            </motion.a>
+            </MotionLink>
           </div>
         </motion.div>
       </div>

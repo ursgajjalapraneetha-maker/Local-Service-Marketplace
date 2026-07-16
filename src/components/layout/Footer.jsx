@@ -28,19 +28,19 @@ const servicesLinks = [
 ]
 
 const supportLinks = [
-  { label: 'Help Center', path: '#' },
-  { label: 'FAQs', path: '#' },
-  { label: 'Privacy Policy', path: '#' },
-  { label: 'Terms & Conditions', path: '#' },
-  { label: 'Safety Guidelines', path: '#' },
+  { label: 'Help Center', path: '/contact' },
+  { label: 'FAQs', path: '/contact' },
+  { label: 'Privacy Policy', path: '/privacy' },
+  { label: 'Terms & Conditions', path: '/terms' },
+  { label: 'Safety Guidelines', path: '/about' },
 ]
 
 const resourcesLinks = [
   { label: 'Become a Provider', path: '/register?role=provider' },
-  { label: 'Mobile App', path: '#' },
-  { label: 'Safety', path: '#' },
-  { label: 'Trust Center', path: '#' },
-  { label: 'Blog', path: '#' },
+  { label: 'Mobile App', path: '/services' },
+  { label: 'Safety', path: '/about' },
+  { label: 'Trust Center', path: '/about' },
+  { label: 'Blog', path: '/about' },
 ]
 
 const contactInfo = [
@@ -131,19 +131,19 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-6">
             <Link
-              to="/"
+              to="/privacy"
               className="text-sm text-gray-500 hover:text-primary transition-colors"
             >
               Privacy Policy
             </Link>
             <Link
-              to="/"
+              to="/terms"
               className="text-sm text-gray-500 hover:text-primary transition-colors"
             >
               Terms & Conditions
             </Link>
             <Link
-              to="/"
+              to="/privacy"
               className="text-sm text-gray-500 hover:text-primary transition-colors"
             >
               Cookie Policy
